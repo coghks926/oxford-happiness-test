@@ -56,7 +56,14 @@
             color: #475569;
             line-height: 1.6;
             word-break: keep-all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            flex-wrap: wrap;
         }
+        .section-header .subtitle-text .subtitle-line { display: inline; }
+        .section-header .subtitle-text .subtitle-line.secondary { font-weight: 600; color: #1f2937; }
         .section-header .divider {
             width: clamp(80px, 15vw, 140px);
             height: 3px;
@@ -176,7 +183,11 @@
             .intro-desc { white-space: normal; line-height: 1.6; }
             .mobile-break { display: block; }
             .section-header { margin-bottom: 1.75rem; }
-            .section-header .subtitle-text { font-size: clamp(12px, 3vw, 15px); }
+            .section-header .subtitle-text {
+                font-size: clamp(15px, 4.4vw, 18px);
+                flex-direction: column;
+                gap: .3rem;
+            }
             .section-header .divider { margin-top: 1rem; }
             .completion-message .mobile-break { display: inline; }
             .q-header { flex-direction: column; gap: .35rem; align-items: center; }
@@ -313,7 +324,10 @@
                             <div class="section-header">
                                 <div class="tag">📝 시작 준비</div>
                                 <div class="title-main">사용자 정보 입력</div>
-                                <div class="subtitle-text">검사를 시작하기 전에 이름, 성별, 나이를 입력해주세요.</div>
+                                <div class="subtitle-text">
+                                    <span class="subtitle-line">검사를 시작하기 전에</span>
+                                    <span class="subtitle-line secondary">이름, 성별, 나이를 입력해주세요.</span>
+                                </div>
                                 <div class="divider"></div>
                             </div>
                             <div class="user-form-grid">
