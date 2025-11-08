@@ -21,6 +21,24 @@
         }
         .title { font-size: clamp(24px, 5vw, 34px); font-weight: 800; color: #0f172a; text-align: center; word-break: keep-all; }
         .subtitle { text-align: center; color: #475569; margin-top: .5rem; font-size: clamp(14px, 2.5vw, 18px); line-height: 1.6; word-break: keep-all; }
+        .intro-desc {
+            text-align: center;
+            color: #64748b;
+            margin-top: .5rem;
+            font-size: clamp(11px, 2vw, 14px);
+            white-space: nowrap;
+        }
+        .intro-desc .mobile-break { display: inline; }
+        .user-form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            width: 100%;
+            align-items: center;
+        }
+        .user-field {
+            width: min(100%, 640px);
+        }
         .consent input[type="checkbox"]{ position: relative; top: 2px; }
         .controls { display: flex; gap: .75rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; }
         .btn {
@@ -69,6 +87,8 @@
         @media (max-width: 768px) {
             .container { padding: 1.5rem 1.25rem; }
             .card { padding: clamp(1.75rem, 6vw, 3rem); width: 100%; border-radius: 1.4rem; }
+            .user-form-grid { gap: 1.1rem; }
+            .user-field { max-width: 100%; }
             .intro-desc { white-space: normal; line-height: 1.6; }
             .q-header { flex-direction: column; gap: .35rem; align-items: center; }
             .q-number, .progress { font-size: clamp(14px, 3.5vw, 16px); }
@@ -93,6 +113,7 @@
             .review-container { gap: .75rem; }
             .question-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
             .btn { padding: .85rem 1.1rem; }
+            .user-form-grid { gap: 1rem; }
         }
     </style>
     <script>
@@ -174,8 +195,8 @@
                                 <div class="title" style="font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: #1e40af; margin-bottom: 0.5rem; line-height: 1.2;">옥스퍼드 행복 척도</div>
                                 <div style="font-size: clamp(18px, 4vw, 26px); font-weight: 600; color: #64748b; white-space: nowrap;">(Oxford Happiness Questionnaire)</div>
                             </div>
-                            <div class="intro-desc" style="text-align: center; color: #64748b; margin-top: .5rem; font-size: clamp(11px, 2vw, 14px); white-space: nowrap;">
-                                Michael Argyle과 Peter Hills가 개발한 주관적 웰빙(SWB, Subjective Well-Being) 측정 도구
+                            <div class="intro-desc">
+                                Michael Argyle과 Peter Hills가 개발한 <span class="mobile-break">주관적 웰빙(SWB, Subjective Well-Being) 측정 도구</span>
                             </div>
                             <div class="subtitle">29문항, 1~6점. 최근의 본인 상태를 가장 잘 나타내는 응답을 선택하세요.</div>
                             <div class="controls">
@@ -193,12 +214,12 @@
                         <div class="card" style="padding: clamp(2.5rem, 6vw, 4rem); border-radius: 1.5rem; max-width: 780px; width: 100%;">
                             <div class="title" style="font-size: clamp(24px, 5vw, 34px); font-weight: 900; color: #1e40af; margin-bottom: 0.75rem; line-height: 1.2;">사용자 정보 입력</div>
                             <div class="subtitle" style="margin-bottom: 2rem;">검사를 시작하기 전에 이름, 성별, 나이를 입력해주세요.</div>
-                            <div style="display:grid; grid-template-columns: 1fr; gap: 1.4rem; width:100%;">
-                                <div style="max-width: 600px; width: 100%; margin: 0 auto;">
+                            <div class="user-form-grid">
+                                <div class="user-field">
                                     <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">이름</label>
                                     <input id="u-name" type="text" value="${state.userName}" placeholder="이름을 입력하세요" style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; font-size:clamp(14px,2.2vw,16px); background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';" />
                                 </div>
-                                <div style="max-width: 600px; width: 100%; margin: 0 auto;">
+                                <div class="user-field">
                                     <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">성별</label>
                                     <div style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; display:flex; align-items:center; justify-content:flex-start; gap:1.5rem; background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
                                         ${['남성','여성'].map(g=>`
@@ -209,14 +230,14 @@
                                         `).join('')}
                                     </div>
                                 </div>
-                                <div style="max-width: 600px; width: 100%; margin: 0 auto;">
+                                <div class="user-field">
                                     <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">나이</label>
                                     <select id="u-age" style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; font-size:clamp(14px,2.2vw,16px); background:#fff; cursor:pointer; transition: all 0.3s ease; appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22%3E%3Cpath stroke=%22%236b7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22M6 8l4 4 4-4%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
                                         <option value="">나이를 선택하세요</option>
                                         ${['10대','20대','30대','40대','50대','60대','70대 이상'].map(a=>`<option ${state.userAge===a?'selected':''}>${a}</option>`).join('')}
                                     </select>
                                 </div>
-                                <div class="consent" style="border:2px solid #e5e7eb; border-radius:.75rem; padding: 1.1rem; background:#fff; margin: 0.25rem auto 0 auto; max-width: 600px; width: 100%;">
+                                <div class="consent user-field" style="border:2px solid #e5e7eb; border-radius:.75rem; padding: 1.1rem; background:#fff; margin: 0.25rem auto 0 auto; width: 100%;">
                                     <label style="display:flex; gap:.6rem; align-items:center; cursor:pointer; font-size:clamp(13px,2.1vw,15px); color:#475569;">
                                         <input id="u-consent" type="checkbox" ${state.consent?'checked':''} style="width:18px; height:18px; accent-color:#6366f1; cursor:pointer; position: relative; top: 2px;" />
                                         연구·통계 및 서비스 개선 목적의 익명 처리된 데이터 활용에 동의합니다.
