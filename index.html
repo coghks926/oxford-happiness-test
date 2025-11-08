@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>옥스퍼드 행복 척도 (OHQ)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh; color: #1f2937; line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .card {
+            background: rgba(255,255,255,0.98);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 1.5rem; padding: clamp(1rem, 2.5vw, 2rem); box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: min(900px, 100%);
+        }
+        .title { font-size: clamp(24px, 5vw, 34px); font-weight: 800; color: #0f172a; text-align: center; }
+        .subtitle { text-align: center; color: #475569; margin-top: .5rem; font-size: clamp(14px, 2.5vw, 18px); }
+        .consent input[type="checkbox"]{ position: relative; top: 2px; }
+        .controls { display: flex; gap: .75rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            background: linear-gradient(135deg, #6366f1, #22d3ee);
+            color: #fff; border: 0; border-radius: .75rem; padding: clamp(.7rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.4rem);
+            font-weight: 700; cursor: pointer; box-shadow: 0 6px 14px rgba(99,102,241,.35); font-size: clamp(14px, 2.2vw, 18px);
+        }
+        .btn.secondary { background: #e5e7eb; color: #374151; box-shadow: none; }
+        .btn:disabled { background: #cbd5e1; color: #e2e8f0; cursor: not-allowed; box-shadow: none; }
+        .q-header { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0; }
+        .q-number { font-weight: 800; color: #2563eb; }
+        .q-text { font-size: clamp(18px, 3vw, 22px); color: #0f172a; margin-top: .5rem; text-align: center; }
+        .scale { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(.3rem, 1vw, .5rem); margin-top: 1rem; width: 100%; }
+        .option { display: flex; flex-direction: column; gap: .3rem; align-items: center; justify-content: center; padding: clamp(.5rem, 1.5vw, .9rem); border: 2px solid #e5e7eb; border-radius: .75rem; background: #ffffff; cursor: pointer; position: relative; min-height: fit-content; }
+        .option > div:first-child { font-weight: 800; white-space: nowrap; font-size: clamp(14px, 2.2vw, 18px); }
+        .option > div:last-child { width: 100%; text-align: center; line-height: 1.3; font-size: clamp(11px, 1.8vw, 13px); color: #64748b; word-break: keep-all; max-height: 2.6em; overflow: hidden; }
+        .option.selected { border-color: #22c55e; background: #ecfeff; }
+        .legend { display: none; }
+        .nav { display: flex; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
+        .progress { text-align: center; font-weight: 700; color: #334155; margin-top: .5rem; }
+        .hidden { display: none; }
+        .result-box { display: grid; gap: .75rem; margin-top: 1rem; }
+        .band { padding: .75rem; border-radius: .5rem; }
+        .b1 { background: #fee2e2; }
+        .b2 { background: #fef3c7; }
+        .b3 { background: #e0e7ff; }
+        .b4 { background: #dcfce7; }
+        .b5 { background: #bbf7d0; }
+        .footer-note { margin-top: 1rem; text-align: center; color: #64748b; font-size: 12px; }
+        @media (max-width: 560px) {
+            .scale { grid-template-columns: repeat(3, 1fr); gap: clamp(.25rem, .8vw, .4rem); }
+            .option { padding: clamp(.4rem, 1.2vw, .7rem); gap: .25rem; }
+            .option > div:first-child { font-size: clamp(13px, 2vw, 16px); }
+            .option > div:last-child { font-size: clamp(11px, 1.8vw, 13px); line-height: 1.25; }
+        }
+    </style>
+    <script>
+        // 29개 문항 (OHQ) - 한국어 요약 문구
+        // 실제 문항 문구는 사용자 제공 이미지와 동일해야 하므로 필요 시 수정 가능
+        const items = [
+            "나는 나 자신에 대해 특별히 만족스럽다고 느끼지 않는다.",
+            "나는 다른 사람들에게 깊은 관심을 갖고 있다.",
+            "나는 삶이 매우 보람차다고 느낀다.",
+            "나는 거의 모든 사람들에게 따뜻한 감정을 가지고 있다.",
+            "나는 아침에 상쾌하게 일어나는 일이 드물다.",
+            "나는 미래에 대해 특별히 낙관적이지 않다.",
+            "나는 대부분의 것을 재미있게 느낀다.",
+            "나는 언제나 어떤 일에 몰입하고 헌신하는 편이다.",
+            "내 삶은 괜찮고 만족스럽다고 느낀다.",
+            "나는 세상이 좋은 곳이라고 생각하지 않는다.",
+            "나는 자주 웃는다.",
+            "나는 내 삶에 대해 전반적으로 만족한다.",
+            "나는 내 외모가 매력적이라고 생각하지 않는다.",
+            "하고 싶은 일이 실제로 한 일 사이에는 간극이 있다.",
+            "나는 매우 행복한 사람이라고 생각한다.",
+            "나는 사람에서 아름다움을 자주 발견한다.",
+            "나는 다른 사람에게 밝고 긍정적인 영향을 주는 편이다.",
+            "나는 다른 사람들과 잘 어울린다.",
+            "나는 내 삶을 내가 조절하고 있다는 느낌이 별로 없다.",
+            "어떤 일들이 행복할 수 있을 것 같은 자신감이 있다.",
+            "나는 정신적으로 매우 맑고 또렷하다고 느낀다.",
+            "나는 자주 기쁨과 환희를 경험한다.",
+            "나는 결정을 쉽게 내리는 편이 아니다.",
+            "내 삶에는 특별한 의미나 목적이 없다고 느낀다.",
+            "나는 에너지가 넘치는 편이다.",
+            "나는 대체로 상황에 긍정적인 영향을 미치는 사람이다.",
+            "나는 다른 사람들과 함께 있을 때 별로 즐겁지 않다.",
+            "나는 건강하다고 느끼지 않는다.",
+            "나는 과거에 행복한 기억이 별로 없다."
+        ];
+
+        // 역채점 문항 번호(1-based). 이미지에서 주황색(부정 문항) 기준으로 수정 가능
+        // 현재 기본값은 일반적으로 알려진 부정문 위주로 설정
+        const reverseItems = new Set([1,5,6,10,13,14,19,23,24,27,28,29]);
+
+        const labels = ["매우 그렇지 않다", "대체로 그렇지 않다", "다소 그렇지 않다", "다소 그렇다", "대체로 그렇다", "매우 그렇다"];
+
+        let state = { screen: 'intro', index: 0, answers: {}, userName: '', userGender: '', userAge: '', consent: false };
+
+        function scoreOf(itemIndex, choice1to6) {
+            if (choice1to6 == null) return 0;
+            const qNum = itemIndex + 1;
+            const raw = Number(choice1to6);
+            // 역채점: 1<->6, 2<->5, 3<->4
+            return reverseItems.has(qNum) ? (7 - raw) : raw;
+        }
+
+        function totalScore() {
+            let sum = 0;
+            for (let i = 0; i < items.length; i++) {
+                const v = state.answers[i];
+                sum += scoreOf(i, v);
+            }
+            return sum;
+        }
+
+        function getBand(total) {
+            // 범위 텍스트를 해석 뒤에 (N~M점)로 명시
+            if (total <= 87) return { cls: 'b1', text: '매우 낮은 행복 수준 - 우울감을 느끼거나 삶의 만족도가 낮을 수 있음 (29~87점)' };
+            if (total <= 116) return { cls: 'b2', text: '평균 이하의 행복 - 일상에서 스트레스나 불만이 있을 수 있음 (88~116점)' };
+            if (total <= 145) return { cls: 'b3', text: '평균적인 행복 - 일반적인 사람들과 비슷한 수준의 삶의 만족도 (117~145점)' };
+            if (total <= 174) return { cls: 'b4', text: '높은 행복 - 긍정적인 감정이 자주 느껴지고 삶에 대한 만족감이 높음 (146~174점)' };
+            return { cls: 'b5', text: '매우 높은 행복 - 극도의 긍정 정서 및 만족감을 경험하는 상태 (175점 이상)' };
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            if (state.screen === 'intro') {
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div style="text-align: center;">
+                                <div class="title" style="font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: #1e40af; margin-bottom: 0.5rem; line-height: 1.2;">옥스퍼드 행복 척도</div>
+                                <div style="font-size: clamp(18px, 4vw, 26px); font-weight: 600; color: #64748b; white-space: nowrap;">(Oxford Happiness Questionnaire)</div>
+                            </div>
+                            <div style="text-align: center; color: #64748b; margin-top: .5rem; font-size: clamp(11px, 2vw, 14px); white-space: nowrap;">Michael Argyle과 Peter Hills가 개발한 주관적 웰빙(SWB, Subjective Well-Being) 측정 도구</div>
+                            <div class="subtitle">29문항, 1~6점. 최근의 본인 상태를 가장 잘 나타내는 응답을 선택하세요.</div>
+                            <div class="controls">
+                                <button class="btn" onclick="state.screen='userinfo'; render()">시작하기</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.screen === 'userinfo') {
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card" style="padding: clamp(2.5rem, 6vw, 4rem); border-radius: 1.5rem; max-width: 750px; width: 100%;">
+                            <div class="title" style="font-size: clamp(24px, 5vw, 34px); font-weight: 900; color: #1e40af; margin-bottom: 0.75rem; line-height: 1.2;">사용자 정보 입력</div>
+                            <div class="subtitle" style="margin-bottom: 2.5rem;">검사를 시작하기 전에 이름, 성별, 나이를 입력해주세요.</div>
+                            <div style="display:grid; grid-template-columns: 1fr; gap: 2rem; width:100%;">
+                                <div>
+                                    <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">이름</label>
+                                    <input id="u-name" type="text" value="${state.userName}" placeholder="이름을 입력하세요" style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; font-size:clamp(14px,2.2vw,16px); background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';" />
+                                </div>
+                                <div>
+                                    <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">성별</label>
+                                    <div style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; display:flex; align-items:center; justify-content:flex-start; gap:1.5rem; background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
+                                        ${['남성','여성'].map(g=>`
+                                            <label style=\"display:flex; align-items:center; gap:.5rem; cursor:pointer;\">
+                                                <input type=\"radio\" name=\"u-gender\" value=\"${g}\" ${state.userGender===g?'checked':''} style=\"width:18px; height:18px; accent-color:#6366f1; cursor:pointer;\" />
+                                                <span style=\"font-size:clamp(14px,2.2vw,16px); color:#334155;\">${g}</span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">나이</label>
+                                    <select id="u-age" style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; font-size:clamp(14px,2.2vw,16px); background:#fff; cursor:pointer; transition: all 0.3s ease; appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22%3E%3Cpath stroke=%22%236b7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22M6 8l4 4 4-4%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
+                                        <option value="">나이를 선택하세요</option>
+                                        ${['10대','20대','30대','40대','50대','60대','70대 이상'].map(a=>`<option ${state.userAge===a?'selected':''}>${a}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="consent" style="border:2px solid #e5e7eb; border-radius:.75rem; padding: 1.25rem; background:#fff; margin-top: 0.5rem;">
+                                    <label style="display:flex; gap:.6rem; align-items:center; cursor:pointer; font-size:clamp(13px,2.1vw,15px); color:#475569;">
+                                        <input id="u-consent" type="checkbox" ${state.consent?'checked':''} style="width:18px; height:18px; accent-color:#6366f1; cursor:pointer; position: relative; top: 2px;" />
+                                        연구·통계 및 서비스 개선 목적의 익명 처리된 데이터 활용에 동의합니다.
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="nav" style="margin-top: 2.5rem;">
+                                <button class="btn secondary" onclick="state.screen='intro'; render()">← 이전</button>
+                                <div style="flex:1"></div>
+                                <button class="btn" onclick="startTestFromInfo()">검사 시작</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.screen === 'test') {
+                const i = state.index;
+                const qNum = i + 1;
+                const selected = state.answers[i] ?? null;
+                const leftDisabled = i === 0;
+                const rightDisabled = i === items.length - 1;
+                const answeredCount = Object.keys(state.answers).length;
+                const isReverse = reverseItems.has(qNum);
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div class="q-header">
+                                <div class="q-number">질문 ${qNum}번</div>
+                                <div class="progress">진행도 ${answeredCount}/${items.length}</div>
+                            </div>
+                            <div class="q-text" style="color:${isReverse ? '#92400e' : '#0f172a'};">${items[i]}</div>
+                            <div class="scale">
+                                ${labels.map((label, idx) => {
+                                    const val = idx + 1;
+                                    const isSel = Number(selected) === val;
+                                    // 역채점이면 답변 텍스트를 역순으로 표시 (1점→매우 그렇다, 6점→매우 그렇지 않다)
+                                    let displayLabel = isReverse ? labels[6 - val] : label;
+                                    // 모든 답변을 두 줄로 통일: 첫 단어 뒤에서 줄바꿈
+                                    const parts = displayLabel.split(' ');
+                                    if (parts.length > 1) {
+                                        displayLabel = parts[0] + '<br>' + parts.slice(1).join(' ');
+                                    }
+                                    return `
+                                        <button class=\"option ${isSel ? 'selected' : ''}\" onclick=\"selectChoice(${i}, ${val})\" style=\"min-width: 0; flex: 1;\">\n                                            <div>${val}점</div>\n                                            <div>${displayLabel}</div>\n                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div class="nav">
+                                <button class="btn secondary" ${leftDisabled ? 'disabled' : ''} onclick="prevQ()">← 이전</button>
+                                <div style="flex:1"></div>
+                                <button class="btn secondary" onclick="openList()">목록</button>
+                                <button class="btn" onclick="nextQ()">다음 →</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.screen === 'list') {
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div class="title" style="font-size:22px">문항 목록</div>
+                            <div class="controls" style="justify-content:flex-start">
+                                ${items.map((_,i)=>{
+                                    const done = state.answers[i]!=null;
+                                    return `<button class="btn ${done?'' : 'secondary'}" onclick="gotoQ(${i})">${i+1}</button>`;
+                                }).join('')}
+                            </div>
+                            <div class="nav" style="margin-top:1.25rem">
+                                <button class="btn secondary" onclick="state.screen='test'; render()">이어하기</button>
+                                <div style="flex:1"></div>
+                                <button class="btn" onclick="finish()">결과 보기</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.screen === 'result') {
+                const total = totalScore();
+                const band = getBand(total);
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div class="title">결과</div>
+                            <div class="result-box">
+                                <div style="font-size: clamp(16px,2.6vw,20px);"><strong>(총 점수 합계:)</strong> <span style="font-weight:800;color:#0ea5e9">${total}</span> / 174</div>
+                                <div class="band ${band.cls}">${band.text}</div>
+                            </div>
+                            <div style="margin-top:1rem">
+                                <details style="margin-bottom:.5rem;">
+                                    <summary style="cursor:pointer;font-weight:700;color:#334155">점수 범위 보기</summary>
+                                    <div style="margin-top:.5rem;">
+                                        <table style="width:100%; border-collapse:collapse; font-size:clamp(14px,2.2vw,16px);">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">점수 범위</th>
+                                                    <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">해석</th>
+                                                </tr>
+                                            </thead>
+        							<tbody>
+                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">29 ~ 87점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">매우 낮은 행복 수준 - 우울감을 느끼거나 삶의 만족도가 낮을 수 있음</td></tr>
+                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">88 ~ 116점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균 이하의 행복 - 일상에서 스트레스나 불만이 있을 수 있음</td></tr>
+                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">117 ~ 145점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균적인 행복 - 일반적인 사람들과 비슷한 수준의 삶의 만족도</td></tr>
+                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">146 ~ 174점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">높은 행복 - 긍정적인 감정이 자주 느껴지고 삶에 대한 만족감이 높음</td></tr>
+                                                <tr><td style="padding:.5rem;">175점 이상</td><td style="padding:.5rem;">매우 높은 행복 - 극도의 긍정 정서 및 만족감을 경험하는 상태</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </details>
+                                <details>
+                                    <summary style="cursor:pointer;font-weight:700;color:#334155">문항별 점수 보기</summary>
+                                    <div style="margin-top:.5rem;display:grid;grid-template-columns: repeat(auto-fill,minmax(240px,1fr));gap:.5rem;">
+                                        ${items.map((t,i)=>{
+                                            const raw = state.answers[i];
+                                            const adj = scoreOf(i, raw);
+                                            const rev = reverseItems.has(i+1) ? ' (역채점)' : '';
+                                            return `<div style=\"padding:.5rem;border:1px solid #e5e7eb;border-radius:.5rem;background:#fff\"><div style=\"font-weight:700;color:#2563eb\">${i+1}. ${adj}점${rev}</div><div style=\"font-size:12px;color:#475569\">선택: ${raw ?? '-'}점</div></div>`;
+                                        }).join('')}
+                                    </div>
+                                </details>
+                            </div>
+                            <div class="nav">
+                                <button class="btn secondary" onclick="state.screen='list'; render()">← 이전</button>
+                                <div style="flex:1"></div>
+                                <button class="btn" onclick="state.screen='completion'; render()">다음 →</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.screen === 'completion') {
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div style="text-align: center; padding: 2rem 0;">
+                                <div style="font-size: clamp(48px, 10vw, 72px); margin-bottom: 1rem;">🎉</div>
+                                <div class="title" style="font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: #1e40af; margin-bottom: 1rem;">수고하셨습니다!</div>
+                                <div style="font-size: clamp(16px, 3vw, 20px); color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
+                                    옥스퍼드 행복 척도 검사를 완료해주셔서 감사합니다.<br>
+                                    검사 결과를 바탕으로 더 행복한 일상을 만들어가시길 바랍니다.
+                                </div>
+                                <div style="font-size: clamp(13px, 2.2vw, 15px); color: #64748b; line-height: 1.6; margin-top: 2rem;">
+                                    언제든지 다시 검사해보시고,<br>
+                                    꾸준한 자기 관리로 행복을 유지하세요! 💪
+                                </div>
+                            </div>
+                            <div class="nav">
+                                <button class="btn secondary" onclick="state.screen='result'; render()">← 이전</button>
+                                <div style="flex:1"></div>
+                                <button class="btn" onclick="restart()">처음으로</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+        }
+
+        function selectChoice(i, val) {
+            if (state.answers[i] === val) {
+                delete state.answers[i];
+            } else {
+                state.answers[i] = val;
+            }
+            render();
+        }
+        function nextQ() {
+            if (state.index < items.length - 1) {
+                state.index++;
+                render();
+            } else {
+                state.screen = 'list';
+                render();
+            }
+        }
+        function prevQ() { if (state.index > 0) { state.index--; render(); } }
+        function openList() { state.screen = 'list'; render(); }
+        function gotoQ(i) { state.index = i; state.screen = 'test'; render(); }
+        function finish() { state.screen = 'result'; render(); }
+        function restart() { state = { screen: 'intro', index: 0, answers: {}, userName: '', userGender: '', userAge: '', consent: false }; render(); }
+
+        function startTestFromInfo() {
+            const nameEl = document.getElementById('u-name');
+            const ageEl = document.getElementById('u-age');
+            const consentEl = document.getElementById('u-consent');
+            const genderEl = document.querySelector('input[name="u-gender"]:checked');
+            state.userName = nameEl ? nameEl.value.trim() : '';
+            state.userAge = ageEl ? ageEl.value : '';
+            state.consent = consentEl ? consentEl.checked : false;
+            state.userGender = genderEl ? genderEl.value : '';
+            if (!state.userName) { alert('이름을 입력해주세요.'); return; }
+            if (!state.userGender) { alert('성별을 선택해주세요.'); return; }
+            if (!state.userAge) { alert('나이를 선택해주세요.'); return; }
+            if (!state.consent) { alert('정보 활용에 동의해주세요.'); return; }
+            state.screen = 'test';
+            render();
+        }
+
+        window.addEventListener('DOMContentLoaded', render);
+    </script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>
+
