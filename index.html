@@ -63,21 +63,15 @@
         .option.selected { border-color: #22c55e; background: #ecfeff; }
         .legend { display: none; }
         .nav { display: flex; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
-        .nav.nav-question { align-items: center; }
-        .nav.nav-question .btn.prev,
-        .nav.nav-question .btn.secondary.prev,
-        .nav.nav-question .btn.next,
-        .nav.nav-question .btn.secondary.next {
-            flex: 0 0 auto;
-            min-width: 110px;
+        .nav.nav-question {
+            align-items: center;
+            width: 100%;
         }
         .nav.nav-question .center {
             flex: 1;
             display: flex;
             justify-content: center;
-        }
-        .nav.nav-question .center .btn {
-            min-width: 110px;
+            gap: .75rem;
         }
         .progress { text-align: center; font-weight: 700; color: #334155; margin-top: .5rem; }
         .hidden { display: none; }
@@ -311,11 +305,11 @@
                                 }).join('')}
                             </div>
                         <div class="nav nav-question">
-                            <button class="btn secondary prev" ${leftDisabled ? 'disabled' : ''} onclick="prevQ()">← 이전</button>
+                            <button class="btn secondary" ${leftDisabled ? 'disabled' : ''} onclick="prevQ()">← 이전</button>
                             <div class="center">
                                 <button class="btn secondary" onclick="openList()">목록</button>
                             </div>
-                            <button class="btn next" onclick="nextQ()">다음 →</button>
+                            <button class="btn" onclick="nextQ()">다음 →</button>
                         </div>
                         </div>
                     </div>
