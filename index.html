@@ -98,6 +98,36 @@
             min-height: 48px;
         }
         .question-grid .answered-badge { background: #dbeafe; color: #1d4ed8; }
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(64px, 1fr));
+            gap: .65rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .list-grid .list-item {
+            border-radius: .9rem;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: none;
+            background: #e2e8f0;
+            color: #475569;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .list-grid .list-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, .15);
+        }
+        .list-grid .list-item.done {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        .list-grid .list-item.placeholder {
+            visibility: hidden;
+        }
 
         @media (max-width: 768px) {
             .container { padding: 1.5rem 1.25rem; }
@@ -114,6 +144,7 @@
             .option > div:last-child { font-size: clamp(12px, 3.5vw, 14px); }
             .result-box { gap: .5rem; }
             .question-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .55rem; }
+            .list-grid { grid-template-columns: repeat(5, minmax(60px, 1fr)); gap: .6rem; }
         }
 
         @media (max-width: 480px) {
@@ -131,6 +162,8 @@
             .btn { padding: .85rem 1.1rem; }
             .user-form-grid { gap: 1rem; }
             input, select, textarea { font-size: 16px; }
+            .list-grid { grid-template-columns: repeat(4, minmax(60px, 1fr)); gap: .55rem; justify-content: center; }
+            .list-grid .list-item.placeholder { display: none; }
         }
     </style>
     <script>
@@ -322,11 +355,17 @@
                     <div class="container">
                         <div class="card">
                             <div class="title" style="font-size:22px">문항 목록</div>
-                            <div class="controls" style="justify-content:flex-start">
-                                ${items.map((_,i)=>{
-                                    const done = state.answers[i]!=null;
-                                    return `<button class="btn ${done?'' : 'secondary'}" onclick="gotoQ(${i})">${i+1}</button>`;
-                                }).join('')}
+                            <div class="list-grid">
+                                ${(() => {
+                                    const perRow = 5;
+                                    const placeholders = (perRow - (items.length % perRow)) % perRow;
+                                    const buttons = items.map((_,i)=>{
+                                        const done = state.answers[i]!=null;
+                                        return `<button class="list-item ${done?'done':''}" onclick="gotoQ(${i})">${i+1}</button>`;
+                                    }).join('');
+                                    const filler = Array.from({length: placeholders}).map(()=>`<span class="list-item placeholder"></span>`).join('');
+                                    return buttons + filler;
+                                })()}
                             </div>
                             <div class="nav" style="margin-top:1.25rem">
                                 <button class="btn secondary" onclick="state.screen='test'; render()">이어하기</button>
