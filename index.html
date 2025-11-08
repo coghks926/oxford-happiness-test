@@ -100,14 +100,15 @@
         .question-grid .answered-badge { background: #dbeafe; color: #1d4ed8; }
         .list-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(64px, 1fr));
-            gap: .65rem;
+            grid-template-columns: repeat(6, minmax(60px, 1fr));
+            gap: .6rem;
             width: 100%;
             margin-top: 1rem;
+            justify-items: stretch;
         }
         .list-grid .list-item {
-            border-radius: .9rem;
-            min-height: 48px;
+            border-radius: .85rem;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -125,6 +126,8 @@
             background: #dbeafe;
             color: #1d4ed8;
         }
+        .desktop-only { display: inline-flex; }
+        .mobile-only { display: none; }
         .list-grid .list-item.placeholder {
             visibility: hidden;
         }
@@ -163,7 +166,8 @@
             .user-form-grid { gap: 1rem; }
             input, select, textarea { font-size: 16px; }
             .list-grid { grid-template-columns: repeat(4, minmax(60px, 1fr)); gap: .55rem; justify-content: center; }
-            .list-grid .list-item.placeholder { display: none; }
+            .desktop-only { display: none; }
+            .mobile-only { display: inline-flex; visibility: hidden; }
         }
     </style>
     <script>
@@ -357,14 +361,18 @@
                             <div class="title" style="font-size:22px">문항 목록</div>
                             <div class="list-grid">
                                 ${(() => {
-                                    const perRow = 5;
-                                    const placeholders = (perRow - (items.length % perRow)) % perRow;
+                                    const perRowDesktop = 6;
+                                    const perRowMobile = 4;
+                                    const total = items.length;
                                     const buttons = items.map((_,i)=>{
                                         const done = state.answers[i]!=null;
                                         return `<button class="list-item ${done?'done':''}" onclick="gotoQ(${i})">${i+1}</button>`;
                                     }).join('');
-                                    const filler = Array.from({length: placeholders}).map(()=>`<span class="list-item placeholder"></span>`).join('');
-                                    return buttons + filler;
+                                    const placeholdersDesktop = (perRowDesktop - (total % perRowDesktop)) % perRowDesktop;
+                                    const fillerDesktop = Array.from({length: placeholdersDesktop}).map(()=>`<span class="list-item placeholder desktop-only"></span>`).join('');
+                                    const placeholdersMobile = (perRowMobile - (total % perRowMobile)) % perRowMobile;
+                                    const fillerMobile = Array.from({length: placeholdersMobile}).map(()=>`<span class="list-item placeholder mobile-only"></span>`).join('');
+                                    return buttons + fillerDesktop + fillerMobile;
                                 })()}
                             </div>
                             <div class="nav" style="margin-top:1.25rem">
