@@ -29,6 +29,9 @@
             white-space: nowrap;
         }
         .mobile-break { display: inline; }
+        input, select, textarea {
+            font-size: clamp(14px, 1.8vw, 16px);
+        }
         .user-form-grid {
             display: flex;
             flex-direction: column;
@@ -117,6 +120,7 @@
             .question-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; }
             .btn { padding: .85rem 1.1rem; }
             .user-form-grid { gap: 1rem; }
+            input, select, textarea { font-size: 16px; }
         }
     </style>
     <script>
