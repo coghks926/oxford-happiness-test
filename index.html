@@ -17,9 +17,10 @@
             border: 1px solid rgba(0,0,0,0.05);
             border-radius: 1.5rem; padding: clamp(1rem, 2.5vw, 2rem); box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: min(900px, 100%);
+            word-break: keep-all;
         }
-        .title { font-size: clamp(24px, 5vw, 34px); font-weight: 800; color: #0f172a; text-align: center; }
-        .subtitle { text-align: center; color: #475569; margin-top: .5rem; font-size: clamp(14px, 2.5vw, 18px); }
+        .title { font-size: clamp(24px, 5vw, 34px); font-weight: 800; color: #0f172a; text-align: center; word-break: keep-all; }
+        .subtitle { text-align: center; color: #475569; margin-top: .5rem; font-size: clamp(14px, 2.5vw, 18px); line-height: 1.6; word-break: keep-all; }
         .consent input[type="checkbox"]{ position: relative; top: 2px; }
         .controls { display: flex; gap: .75rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; }
         .btn {
@@ -31,7 +32,7 @@
         .btn:disabled { background: #cbd5e1; color: #e2e8f0; cursor: not-allowed; box-shadow: none; }
         .q-header { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0; }
         .q-number { font-weight: 800; color: #2563eb; }
-        .q-text { font-size: clamp(18px, 3vw, 22px); color: #0f172a; margin-top: .5rem; text-align: center; }
+        .q-text { font-size: clamp(18px, 3vw, 22px); color: #0f172a; margin-top: .5rem; text-align: center; line-height: 1.7; word-break: keep-all; }
         .scale { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(.3rem, 1vw, .5rem); margin-top: 1rem; width: 100%; }
         .option { display: flex; flex-direction: column; gap: .3rem; align-items: center; justify-content: center; padding: clamp(.5rem, 1.5vw, .9rem); border: 2px solid #e5e7eb; border-radius: .75rem; background: #ffffff; cursor: pointer; position: relative; min-height: fit-content; }
         .option > div:first-child { font-weight: 800; white-space: nowrap; font-size: clamp(14px, 2.2vw, 18px); }
@@ -64,8 +65,6 @@
         @media (max-width: 768px) {
             .container { padding: 1.5rem 1.25rem; }
             .card { padding: clamp(1.75rem, 6vw, 3rem); width: 100%; border-radius: 1.4rem; }
-            .nav { flex-direction: column; gap: .75rem; }
-            .nav .btn, .nav .btn.secondary { width: 100%; }
             .q-header { flex-direction: column; gap: .35rem; align-items: center; }
             .q-number, .progress { font-size: clamp(14px, 3.5vw, 16px); }
             .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
