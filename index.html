@@ -29,6 +29,7 @@
             white-space: nowrap;
         }
         .mobile-break { display: inline; }
+        .completion-message .mobile-break { display: none; }
         input, select, textarea {
             font-size: clamp(14px, 1.8vw, 16px);
         }
@@ -139,6 +140,7 @@
             .user-field { width: 100%; margin: 0; }
             .intro-desc { white-space: normal; line-height: 1.6; }
             .mobile-break { display: block; }
+            .completion-message .mobile-break { display: inline; }
             .q-header { flex-direction: column; gap: .35rem; align-items: center; }
             .q-number, .progress { font-size: clamp(14px, 3.5vw, 16px); }
             .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
@@ -168,6 +170,7 @@
             .list-grid { grid-template-columns: repeat(4, minmax(60px, 1fr)); gap: .55rem; justify-content: center; }
             .desktop-only { display: none; }
             .mobile-only { display: inline-flex; visibility: hidden; }
+            .completion-message { margin-bottom: 1rem; }
         }
     </style>
     <script>
@@ -445,16 +448,12 @@
                 app.innerHTML = `
                     <div class="container">
                         <div class="card">
-                            <div style="text-align: center; padding: 2rem 0;">
+                            <div style="text-align: center; padding: 2rem 0; word-break: keep-all;">
                                 <div style="font-size: clamp(48px, 10vw, 72px); margin-bottom: 1rem;">🎉</div>
-                                <div class="title" style="font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: #1e40af; margin-bottom: 1rem;">수고하셨습니다!</div>
-                                <div style="font-size: clamp(16px, 3vw, 20px); color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
-                                    옥스퍼드 행복 척도 검사를 완료해주셔서 감사합니다.<br>
+                                <div class="title" style="font-size: clamp(28px, 6vw, 42px); font-weight: 900; color: #1e40af; margin-bottom: 1.5rem;">수고하셨습니다!</div>
+                                <div class="completion-message" style="font-size: clamp(16px, 3vw, 20px); color: #475569; line-height: 1.6;">
+                                    옥스퍼드 행복 척도 검사를<br class="mobile-break"> 완료해주셔서 감사합니다 😊<br>
                                     검사 결과를 바탕으로 더 행복한 일상을 만들어가시길 바랍니다.
-                                </div>
-                                <div style="font-size: clamp(13px, 2.2vw, 15px); color: #64748b; line-height: 1.6; margin-top: 2rem;">
-                                    언제든지 다시 검사해보시고,<br>
-                                    꾸준한 자기 관리로 행복을 유지하세요! 💪
                                 </div>
                             </div>
                             <div class="nav">
