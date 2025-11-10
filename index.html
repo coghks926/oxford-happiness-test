@@ -229,7 +229,7 @@
         .info-item strong {
             font-weight: 700;
             color: #2563eb;
-            min-width: 1.8em;
+            min-width: 1.5em;
         }
         .info-email {
             display: inline-flex;
@@ -298,8 +298,15 @@
             .range-block { padding: .9rem 1rem; }
             .range-title { font-size: clamp(14px, 4vw, 17px); }
             .info-block { padding: 1rem; gap: 1rem; }
-            .info-item { flex-direction: column; gap: .35rem; font-size: clamp(14px, 4vw, 17px); }
-            .info-item strong { min-width: auto; }
+            .info-item {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                column-gap: .5rem;
+                row-gap: .35rem;
+                font-size: clamp(14px, 4vw, 17px);
+                line-height: 1.55;
+            }
+            .info-item strong { margin-top: .1rem; min-width: 1.4em; }
             .info-email { justify-content: center; font-size: clamp(13px, 4vw, 16px); }
         }
     </style>
