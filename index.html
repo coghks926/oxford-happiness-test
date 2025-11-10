@@ -175,6 +175,78 @@
             visibility: hidden;
         }
 
+        .range-block {
+            margin-top: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(248, 250, 252, 0.85);
+        }
+        .range-title {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: clamp(14px, 2.4vw, 18px);
+            margin-bottom: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .45rem;
+        }
+        .range-title::before {
+            content: "📊";
+            font-size: 1.1em;
+        }
+        .info-block {
+            margin-top: clamp(1.5rem, 4vw, 2.5rem);
+            padding: clamp(1.2rem, 3.5vw, 2rem);
+            border-radius: 1.25rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(56, 189, 248, 0.12));
+            border: 1px solid rgba(99, 102, 241, 0.18);
+            display: grid;
+            gap: clamp(.85rem, 2.2vw, 1.4rem);
+            word-break: keep-all;
+        }
+        .info-title {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: clamp(15px, 2.8vw, 19px);
+            font-weight: 800;
+            color: #1d4ed8;
+            letter-spacing: .02em;
+        }
+        .info-title::before {
+            content: "ℹ️";
+            font-size: 1.2em;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: .75rem;
+            font-size: clamp(14px, 2.5vw, 17px);
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        .info-item strong {
+            font-weight: 700;
+            color: #2563eb;
+            min-width: 1.8em;
+        }
+        .info-email {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .35rem .75rem;
+            border-radius: 999px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #1d4ed8;
+            font-weight: 600;
+            font-size: clamp(13px, 2.3vw, 15px);
+        }
+        .info-email::before {
+            content: "✉️";
+            font-size: 1.05em;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 1.5rem 1.25rem; }
             .card { padding: clamp(1.75rem, 6vw, 3rem); width: 100%; border-radius: 1.4rem; }
@@ -223,6 +295,12 @@
             .section-header { margin-bottom: 1.5rem; }
             .section-header .tag { margin-bottom: .6rem; }
             .section-header .divider { margin-top: .9rem; }
+            .range-block { padding: .9rem 1rem; }
+            .range-title { font-size: clamp(14px, 4vw, 17px); }
+            .info-block { padding: 1rem; gap: 1rem; }
+            .info-item { flex-direction: column; gap: .35rem; font-size: clamp(14px, 4vw, 17px); }
+            .info-item strong { min-width: auto; }
+            .info-email { justify-content: center; font-size: clamp(13px, 4vw, 16px); }
         }
     </style>
     <script>
@@ -460,26 +538,24 @@
                                 <div class="band ${band.cls}">${band.text}</div>
                             </div>
                             <div style="margin-top:1rem">
-                                <details style="margin-bottom:.5rem;">
-                                    <summary style="cursor:pointer;font-weight:700;color:#334155">점수 범위 보기</summary>
-                                    <div style="margin-top:.5rem;">
-                                        <table style="width:100%; border-collapse:collapse; font-size:clamp(14px,2.2vw,16px);">
-                                            <thead>
-                                                <tr>
-                                                    <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">점수 범위</th>
-                                                    <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">해석</th>
-                                                </tr>
-                                            </thead>
+                                <div class="range-block">
+                                    <div class="range-title">점수 범위 보기</div>
+                                    <table style="width:100%; border-collapse:collapse; font-size:clamp(14px,2.2vw,16px);">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">점수 범위</th>
+                                                <th style="text-align:left; padding:.5rem; border-bottom:2px solid #e5e7eb;">해석</th>
+                                            </tr>
+                                        </thead>
         							<tbody>
-                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">29 ~ 87점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">매우 낮은 행복 수준 - 우울감을 느끼거나 삶의 만족도가 낮을 수 있음</td></tr>
-                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">88 ~ 116점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균 이하의 행복 - 일상에서 스트레스나 불만이 있을 수 있음</td></tr>
-                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">117 ~ 145점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균적인 행복 - 일반적인 사람들과 비슷한 수준의 삶의 만족도</td></tr>
-                                                <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">146 ~ 174점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">높은 행복 - 긍정적인 감정이 자주 느껴지고 삶에 대한 만족감이 높음</td></tr>
-                                                <tr><td style="padding:.5rem;">175점 이상</td><td style="padding:.5rem;">매우 높은 행복 - 극도의 긍정 정서 및 만족감을 경험하는 상태</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </details>
+                                            <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">29 ~ 87점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">매우 낮은 행복 수준 - 우울감을 느끼거나 삶의 만족도가 낮을 수 있음</td></tr>
+                                            <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">88 ~ 116점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균 이하의 행복 - 일상에서 스트레스나 불만이 있을 수 있음</td></tr>
+                                            <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">117 ~ 145점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">평균적인 행복 - 일반적인 사람들과 비슷한 수준의 삶의 만족도</td></tr>
+                                            <tr><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">146 ~ 174점</td><td style="padding:.5rem; border-bottom:1px solid #e5e7eb;">높은 행복 - 긍정적인 감정이 자주 느껴지고 삶에 대한 만족감이 높음</td></tr>
+                                            <tr><td style="padding:.5rem;">175점 이상</td><td style="padding:.5rem;">매우 높은 행복 - 극도의 긍정 정서 및 만족감을 경험하는 상태</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <details>
                                     <summary style="cursor:pointer;font-weight:700;color:#334155">문항별 점수 보기</summary>
                                     <div style="margin-top:.5rem;display:grid;grid-template-columns: repeat(auto-fill,minmax(240px,1fr));gap:.5rem;">
@@ -513,6 +589,20 @@
                                 <div class="completion-message" style="font-size: clamp(16px, 3vw, 20px); color: #475569; line-height: 1.6;">
                                     옥스퍼드 행복 척도 검사를<br class="mobile-break"> 완료해주셔서 감사합니다 😊<br>
                                     검사 결과를 바탕으로 더 행복한 일상을 만들어가시길 바랍니다.
+                                </div>
+                                <div class="info-block">
+                                    <div class="info-title">검사 관련 추가 정보</div>
+                                    <div class="info-item">
+                                        <strong>1.</strong>
+                                        <div>유튜브 <strong>‘이재경교수TV’</strong>, 길벗심리상담연구소 홈페이지에서 더 많은 자료를 확인해 보세요.</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>2.</strong>
+                                        <div>
+                                            교육(강의) 및 심리상담 문의는 아래 메일로 연락 주세요.<br>
+                                            <span class="info-email">ljg4129@naver.com</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="nav">
