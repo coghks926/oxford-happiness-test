@@ -411,15 +411,11 @@
                                 <div class="title-main">사용자 정보 입력</div>
                                 <div class="subtitle-text">
                                     <span class="subtitle-line">검사를 시작하기 전에</span>
-                                    <span class="subtitle-line secondary">이름, 성별, 나이를 입력해주세요.</span>
+                                    <span class="subtitle-line secondary">성별, 나이를 입력해주세요.</span>
                                 </div>
                                 <div class="divider"></div>
                             </div>
                             <div class="user-form-grid">
-                                <div class="user-field">
-                                    <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">이름</label>
-                                    <input id="u-name" type="text" value="${state.userName}" placeholder="이름을 입력하세요" style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; font-size:16px; background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';" />
-                                </div>
                                 <div class="user-field">
                                     <label style="font-weight:700; color:#334155; font-size: clamp(14px,2vw,16px); margin-bottom: 0.5rem; display: block;">성별</label>
                                     <div style="width:100%; height:48px; border:2px solid #e5e7eb; border-radius:.75rem; padding:0 1rem; display:flex; align-items:center; justify-content:flex-start; gap:1.5rem; background:#fff; transition: all 0.3s ease;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.1)';" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
@@ -438,7 +434,7 @@
                                         ${['10대','20대','30대','40대','50대','60대','70대 이상'].map(a=>`<option ${state.userAge===a?'selected':''}>${a}</option>`).join('')}
                                     </select>
                                 </div>
-                                <div class="user-field">
+                                <div class="user-field" style="margin-top: 1rem;">
                                     <label style="display:flex; gap:.6rem; align-items:center; cursor:pointer; font-size:clamp(13px,2.1vw,15px); color:#475569; border:2px solid #e5e7eb; border-radius:.75rem; padding: 1rem; background:#fff;">
                                         <input id="u-consent" type="checkbox" ${state.consent?'checked':''} style="width:18px; height:18px; accent-color:#6366f1; cursor:pointer; position: relative; top: 2px;" />
                                         연구·통계 및 서비스 개선 목적의 익명 처리된 데이터 활용에 동의합니다.
@@ -648,15 +644,12 @@
         function restart() { state = { screen: 'intro', index: 0, answers: {}, userName: '', userGender: '', userAge: '', consent: false }; render(); }
 
         function startTestFromInfo() {
-            const nameEl = document.getElementById('u-name');
             const ageEl = document.getElementById('u-age');
             const consentEl = document.getElementById('u-consent');
             const genderEl = document.querySelector('input[name="u-gender"]:checked');
-            state.userName = nameEl ? nameEl.value.trim() : '';
             state.userAge = ageEl ? ageEl.value : '';
             state.consent = consentEl ? consentEl.checked : false;
             state.userGender = genderEl ? genderEl.value : '';
-            if (!state.userName) { alert('이름을 입력해주세요.'); return; }
             if (!state.userGender) { alert('성별을 선택해주세요.'); return; }
             if (!state.userAge) { alert('나이를 선택해주세요.'); return; }
             if (!state.consent) { alert('정보 활용에 동의해주세요.'); return; }
