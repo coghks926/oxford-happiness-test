@@ -532,6 +532,8 @@
             if (state.screen === 'result') {
                 const total = totalScore();
                 const band = getBand(total);
+                // 결과 페이지가 표시될 때 자동으로 Google Sheets에 저장
+                sendToGoogleSheet();
                 app.innerHTML = `
                     <div class="container">
                         <div class="card">
@@ -655,6 +657,39 @@
             if (!state.consent) { alert('정보 활용에 동의해주세요.'); return; }
             state.screen = 'test';
             render();
+        }
+
+        // 구글 시트로 데이터 전송
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwo9Hb3cIQQxIrQP2DO_cfYWvgHVKYwwAJk56Lx_VEQaWJ_6-CqtkWzYtNW3qQy5KKY/exec';
+        
+        function sendToGoogleSheet() {
+            const total = totalScore();
+            const band = getBand(total);
+            
+            // 결과 해석에서 "-" 앞부분만 추출 (예: "매우 낮은 행복 수준 - 우울감..." → "매우 낮은 행복 수준")
+            const interpretation = band.text.split(' - ')[0].trim();
+            
+            const data = {
+                gender: state.userGender || '',
+                age: state.userAge || '',
+                totalScore: total,
+                interpretation: interpretation
+            };
+            
+            fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                console.log('데이터가 구글 시트에 저장되었습니다.');
+            })
+            .catch(error => {
+                console.error('저장 오류:', error);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', render);
